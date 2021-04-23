@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_crontab',
-    'webpack_loader',
     'django_celery_beat',
     'ZerodhaTask.app',
 ]
@@ -136,12 +135,14 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 # Redis settings
 
 CACHES = {
-    'default': {
-        'BACKEND' : 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://:p97b4319d2a1b9515a467c740ba02fd0d23923a3cece162a1238b46bcba354350@ec2-18-215-213-65'
-                    '.compute-1.amazonaws.com:32570',
-        'OPTIONS' : {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
-        },
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_URL'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": None
+            },
+        }
     }
 }

@@ -1,4 +1,5 @@
 amqp==5.0.6
+APScheduler==3.7.0
 asgiref==3.3.4
 billiard==3.6.4.0
 celery==5.0.5
@@ -20,5 +21,6 @@ pytz==2021.1
 redis==3.5.3
 six==1.15.0
 sqlparse==0.4.1
+tzlocal==2.1
 vine==5.0.0
 wcwidth==0.2.5

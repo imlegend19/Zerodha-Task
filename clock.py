@@ -1,7 +1,7 @@
 import asyncio
 import csv
 import urllib.request
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import BytesIO, TextIOWrapper
 from urllib.error import HTTPError
 from zipfile import ZipFile
@@ -14,7 +14,7 @@ sched = BlockingScheduler()
 UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 
 
-@sched.scheduled_job('interval', seconds=30)
+@sched.scheduled_job('cron', hour=18)
 async def timed_job():
     async def add_row_to_redis(row):
         REDIS.hset(row['SC_NAME'].strip(), 'code', row['SC_CODE'])
@@ -27,7 +27,7 @@ async def timed_job():
     opener.addheaders = [('User-agent', UA)]
     urllib.request.install_opener(opener)
 
-    date = datetime.strftime(datetime.now() - timedelta(1), '%d%m%y')
+    date = datetime.strftime(datetime.now(), '%d%m%y')
     url = f"https://www.bseindia.com/download/BhavCopy/Equity/EQ{date}_CSV.zip"
 
     try:
@@ -47,11 +47,6 @@ async def timed_job():
         print('error:', url)
     except Exception as e:
         print(e)
-
-
-@sched.scheduled_job('cron', hour=18)
-def scheduled_job():
-    print('This job is run every weekday at 5pm.')
 
 
 sched.start()

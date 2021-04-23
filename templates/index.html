@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <title>Zerodha-Task</title>
 
+    <link rel="icon" type="image/png" href="https://zerodha.com/static/images/favicon.png">
+
     <!--suppress CssUnusedSymbol -->
     <style>
         .v-application--wrap {
@@ -58,7 +60,7 @@
                 </v-row>
 
                 <v-row style="padding-top: 16px; padding-bottom: 16px; justify-content: center;">
-                    <v-btn icon large href="https://github.com/imlegend19" target="_blank">
+                    <v-btn icon large href="https://github.com/imlegend19/Zerodha-Task" target="_blank">
                         <img width="32px" height="32px"
                              src="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/github.svg"
                              alt="gh"/>
@@ -104,10 +106,10 @@
                     .finally(() => this.loading = false);
             },
             fetchAll() {
-                this.fetch(`/api/fetch_all`)
+                this.fetch(`/api/fetch_all`);
             },
             queryRedis(query) {
-                this.fetch(`/api/search/${query}`)
+                this.fetch(`/api/search/${query}`);
             },
         }
     });

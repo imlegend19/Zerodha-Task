@@ -7,7 +7,6 @@ def get_results(s):
     results = []
     for key in REDIS.scan_iter(s):
         field_dict = REDIS.hgetall(key)
-        print(field_dict)
 
         try:
             results.append({
@@ -19,7 +18,7 @@ def get_results(s):
                 'close': field_dict[b'close'].decode() if b'close' in field_dict else 'N/A',
             })
         except KeyError:
-            raise Exception(field_dict)
+            pass
 
     return results
 

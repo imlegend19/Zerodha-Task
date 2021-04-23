@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+import redis
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,8 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_crontab',
-    'django_celery_beat',
     'ZerodhaTask.app',
 ]
 
@@ -122,24 +122,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Celery settings
-
-CRONJOBS = [
-    ('*/1 * * * *', 'ZerodhaTask.app.cron.bhavcopy_parser', f'>> {os.path.join(BASE_DIR, "test.log")}')
-    # ('* 6 * * *', 'ZerodhaTask.app.cron.bhavcopy_parser')
-]
-
-CELERY_TIMEZONE = "Asia/Kolkata"
-
-# Redis settings
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_URL'),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}

@@ -1,12 +1,13 @@
+import asyncio
 import csv
 import urllib.request
 from datetime import datetime, timedelta
 from io import BytesIO, TextIOWrapper
 from urllib.error import HTTPError
 from zipfile import ZipFile
-
 from apscheduler.schedulers.blocking import BlockingScheduler
-from django.core.cache import cache
+
+from ZerodhaTask import REDIS
 
 sched = BlockingScheduler()
 
@@ -14,8 +15,14 @@ UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chr
 
 
 @sched.scheduled_job('interval', seconds=30)
-def timed_job():
-    print("inside")
+async def timed_job():
+    async def add_row_to_redis(row):
+        REDIS.hset(row['SC_NAME'].strip(), 'code', row['SC_CODE'])
+        REDIS.hset(row['SC_NAME'].strip(), 'open', row['OPEN'])
+        REDIS.hset(row['SC_NAME'].strip(), 'high', row['HIGH'])
+        REDIS.hset(row['SC_NAME'].strip(), 'low', row['LOW'])
+        REDIS.hset(row['SC_NAME'].strip(), 'close', row['CLOSE'])
+
     opener = urllib.request.build_opener()
     opener.addheaders = [('User-agent', UA)]
     urllib.request.install_opener(opener)
@@ -32,19 +39,10 @@ def timed_job():
                 content = TextIOWrapper(fp)
 
                 reader = csv.DictReader(content)
-                for row in reader:
-                    cache.set(row['SC_NAME'].strip().lower(), {
-                        'code' : row['SC_CODE'],
-                        'name' : row['SC_NAME'],
-                        'open' : row['OPEN'],
-                        'high' : row['HIGH'],
-                        'low'  : row['LOW'],
-                        'close': row['CLOSE'],
-                    })
+                jobs = [add_row_to_redis(r) for r in reader]
+                await asyncio.gather(*jobs)
 
                 content.close()
-
-        print('ye')
     except HTTPError:
         print('error:', url)
     except Exception as e:

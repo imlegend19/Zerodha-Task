@@ -16,7 +16,7 @@ def get_results(s):
                 'open' : field_dict[b'open'].decode(),
                 'high' : field_dict[b'high'].decode(),
                 'low'  : field_dict[b'low'].decode(),
-                'close': field_dict[b'close'].decode(),
+                'close': field_dict[b'close'].decode() if b'close' in field_dict else 'N/A',
             })
         except KeyError:
             raise Exception(field_dict)

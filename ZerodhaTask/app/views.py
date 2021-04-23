@@ -7,15 +7,19 @@ def get_results(s):
     results = []
     for key in REDIS.scan_iter(s):
         field_dict = REDIS.hgetall(key)
+        print(field_dict)
 
-        results.append({
-            'code' : field_dict[b'code'].decode(),
-            'name' : key.decode(),
-            'open' : field_dict[b'open'].decode(),
-            'high' : field_dict[b'high'].decode(),
-            'low'  : field_dict[b'low'].decode(),
-            'close': field_dict[b'close'].decode(),
-        })
+        try:
+            results.append({
+                'code' : field_dict[b'code'].decode(),
+                'name' : key.decode(),
+                'open' : field_dict[b'open'].decode(),
+                'high' : field_dict[b'high'].decode(),
+                'low'  : field_dict[b'low'].decode(),
+                'close': field_dict[b'close'].decode(),
+            })
+        except KeyError:
+            raise Exception(field_dict)
 
     return results
 

@@ -44,7 +44,7 @@
                                         label="Search"
                                         single-line
                                         hide-details
-                                        {% comment %}@input="handleOnChange"{% endcomment %}
+                                        @input="handleOnChange"
                                 ></v-text-field>
                             </v-card-title>
 
@@ -100,7 +100,7 @@
             tuples: [],
         },
         async mounted() {
-            this.fetchAll();
+            this.queryRedis("in");
         },
         methods: {
             fetch(url) {
@@ -127,6 +127,11 @@
             },
             queryRedis(query) {
                 this.fetch(`/api/search/${query}`);
+            },
+            handleOnChange() {
+                if (this.search.trim()) {
+                    this.queryRedis(this.search);
+                }
             },
             export_csv() {
                 let rows = ["code,name,open,high,low,close"];

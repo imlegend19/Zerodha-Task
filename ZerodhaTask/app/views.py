@@ -3,19 +3,25 @@ from django.http import JsonResponse
 from ZerodhaTask import REDIS
 
 
-def fetch_all(request):
+def search(request, query):
+    print(f"got query for {query}")
     results = []
-    for key in REDIS.scan_iter("*"):
+    for key in REDIS.scan_iter(f"*{query.upper()}*"):
+        if len(results) == 10:
+            break
+
         field_dict = REDIS.hgetall(key)
 
         results.append({
-            'code' : field_dict['SC_CODE'],
-            'name' : key,
-            'open' : field_dict['OPEN'],
-            'high' : field_dict['HIGH'],
-            'low'  : field_dict['LOW'],
-            'close': field_dict['CLOSE']
+            'code' : field_dict[b'code'].decode(),
+            'name' : key.decode(),
+            'open' : field_dict[b'open'].decode(),
+            'high' : field_dict[b'high'].decode(),
+            'low'  : field_dict[b'low'].decode(),
+            'close': field_dict[b'close'].decode(),
         })
+
+    print(f"found {len(results)}")
 
     return JsonResponse(
         results, safe=False

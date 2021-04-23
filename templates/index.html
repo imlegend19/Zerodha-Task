@@ -33,7 +33,7 @@
             <v-container>
                 <v-row style="justify-content: center;">
                     <v-col cols="12">
-                        <v-card>
+                        <v-card style="text-align: center">
                             <v-card-title style="margin-bottom: 16px">
                                 Bhavcopy (Equity)
                                 <v-spacer></v-spacer>
@@ -49,12 +49,21 @@
                             </v-card-title>
 
                             <v-data-table
+                                    id="dataTable"
                                     :headers="headers"
                                     :items="tuples"
                                     :items-per-page="10"
                                     class="elevation-1"
                                     :search="search"
+                                    style="box-shadow: none !important;"
+                                    loading
                             ></v-data-table>
+
+                            <v-row justify="center">
+                                <v-btn color="success" class="mr-6" style="margin: 16px" @click="export_csv()">
+                                    Export <i class="mdi mdi-export-variant" aria-hidden="true"></i>
+                                </v-btn>
+                            </v-row>
                         </v-card>
                     </v-col>
                 </v-row>
@@ -73,6 +82,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
 <script>
     new Vue({
         el: '#app',
@@ -97,13 +107,20 @@
                 axios
                     .get(url)
                     .then(response => {
-                        this.tuples = response.data
+                        this.tuples = response.data;
+
+                        // removing loader
+                        for (let ele of document.getElementsByClassName("v-data-table__progress")) {
+                            ele.remove();
+                        }
                     })
                     .catch(error => {
                         console.log(error);
                         this.errored = true
                     })
-                    .finally(() => this.loading = false);
+                    .finally(
+                        () => this.loading = false
+                    );
             },
             fetchAll() {
                 this.fetch(`/api/fetch_all`);
@@ -111,6 +128,26 @@
             queryRedis(query) {
                 this.fetch(`/api/search/${query}`);
             },
+            export_csv() {
+                let rows = ["code,name,open,high,low,close"];
+
+                this.tuples.forEach(
+                    (row) => {
+                        rows.push([row.code, row.name, row.open, row.high, row.low, row.close].join(","))
+                    }
+                )
+
+                let csvFile = new Blob([rows.join("\n")], {type: "text/csv"});
+
+                let downloadLink = document.createElement("a");
+                downloadLink.download = "results.csv";
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+                downloadLink.style.display = "none";
+
+                document.body.appendChild(downloadLink);
+
+                downloadLink.click();
+            }
         }
     });
 </script>

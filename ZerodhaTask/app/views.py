@@ -7,9 +7,6 @@ def search(request, query):
     print(f"got query for {query}")
     results = []
     for key in REDIS.scan_iter(f"*{query.upper()}*"):
-        if len(results) == 10:
-            break
-
         field_dict = REDIS.hgetall(key)
 
         results.append({

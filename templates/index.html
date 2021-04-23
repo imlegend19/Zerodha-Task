@@ -42,7 +42,7 @@
                                         label="Search"
                                         single-line
                                         hide-details
-                                        @input="handleOnChange"
+                                        {% comment %}@input="handleOnChange"{% endcomment %}
                                 ></v-text-field>
                             </v-card-title>
 
@@ -88,12 +88,12 @@
             tuples: [],
         },
         async mounted() {
-            this.queryRedis('IN');
+            this.fetchAll();
         },
         methods: {
-            queryRedis(query) {
+            fetch(url) {
                 axios
-                    .get(`/api/search/${query}`)
+                    .get(url)
                     .then(response => {
                         this.tuples = response.data
                     })
@@ -103,12 +103,12 @@
                     })
                     .finally(() => this.loading = false);
             },
-            handleOnChange() {
-                console.log(this.search);
-                if (this.search.trim()) {
-                    this.queryRedis(this.search);
-                }
-            }
+            fetchAll() {
+                this.fetch(`/api/fetch_all`)
+            },
+            queryRedis(query) {
+                this.fetch(`/api/search/${query}`)
+            },
         }
     });
 </script>

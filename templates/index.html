@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Zerodha-Task</title>
+
+    <!--suppress CssUnusedSymbol -->
+    <style>
+        .v-application--wrap {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <v-app>
+        <v-toolbar flat app style="padding: 16px; height: fit-content;">
+            <v-toolbar-title class="headline text-uppercase" style="width: 100%; text-align: center;">
+                <span style="font-weight: bold">Zerodha-Task</span>
+            </v-toolbar-title>
+        </v-toolbar>
+
+        <v-main>
+            <v-container>
+                <v-row style="justify-content: center;">
+                    <v-col cols="12">
+                        <v-card>
+                            <v-card-title style="margin-bottom: 16px">
+                                Bhavcopy (Equity)
+                                <v-spacer></v-spacer>
+                                <v-text-field
+                                        style="padding-top: 0"
+                                        v-model="search"
+                                        append-icon="mdi-magnify"
+                                        label="Search"
+                                        single-line
+                                        hide-details
+                                ></v-text-field>
+                            </v-card-title>
+
+                            <v-data-table
+                                    :headers="headers"
+                                    :items="tuples"
+                                    :items-per-page="10"
+                                    class="elevation-1"
+                                    :search="search"
+                            ></v-data-table>
+                        </v-card>
+                    </v-col>
+                </v-row>
+
+                <v-row style="padding-top: 16px; padding-bottom: 16px; justify-content: center;">
+                    <v-btn icon large href="https://github.com/imlegend19" target="_blank">
+                        <img width="32px" height="32px"
+                             src="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/github.svg"
+                             alt="gh"/>
+                    </v-btn>
+                </v-row>
+            </v-container>
+        </v-main>
+    </v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+            search: '',
+            headers: [
+                {text: 'Code', value: 'code', align: 'center', sortable: false},
+                {text: 'Name', value: 'name', align: 'center'},
+                {text: 'Open', value: 'open', align: 'center'},
+                {text: 'High', value: 'high', align: 'center'},
+                {text: 'Low', value: 'low', align: 'center'},
+                {text: 'Close', value: 'close', align: 'center'},
+            ],
+            tuples: [],
+        },
+        async mounted() {
+            this.fetchTuples();
+        },
+        methods: {
+            fetchTuples() {
+                axios
+                    .get('/api/fetch_all')
+                    .then(response => {
+                        this.tuples = response.data
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.errored = true
+                    })
+                    .finally(() => this.loading = false)
+            }
+        }
+    });
+</script>
+</body>
+</html>

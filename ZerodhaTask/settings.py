@@ -69,17 +69,6 @@ TEMPLATES = [
     },
 ]
 
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE'          : not DEBUG,
-        'BUNDLE_DIR_NAME': 'webpack_bundles/',  # must end with slash
-        'STATS_FILE'     : str(BASE_DIR.joinpath('frontend', 'webpack-stats.json')),
-        'POLL_INTERVAL'  : 0.1,
-        'TIMEOUT'        : None,
-        'IGNORE'         : [r'.+\.hot-update.js', r'.+\.map'],
-    }
-}
-
 WSGI_APPLICATION = 'ZerodhaTask.wsgi.application'
 
 # Database
@@ -138,8 +127,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery settings
 
 CRONJOBS = [
-    # ('*/1 * * * *', 'ZerodhaTask.app.cron.bhavcopy_parser', f'>> {os.path.join(BASE_DIR, "test.log")}')
-    ('* 6 * * *', 'ZerodhaTask.app.cron.bhavcopy_parser')
+    ('*/1 * * * *', 'ZerodhaTask.app.cron.bhavcopy_parser', f'>> {os.path.join(BASE_DIR, "test.log")}')
+    # ('* 6 * * *', 'ZerodhaTask.app.cron.bhavcopy_parser')
 ]
 
 CELERY_TIMEZONE = "Asia/Kolkata"

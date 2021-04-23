@@ -44,3 +44,5 @@ def bhavcopy_parser():
         print('ye')
     except HTTPError:
         print('error:', url)
+    except Exception as e:
+        print(e)

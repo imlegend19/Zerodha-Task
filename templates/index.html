@@ -100,7 +100,7 @@
             tuples: [],
         },
         async mounted() {
-            this.queryRedis("in");
+            this.fetchAll();
         },
         methods: {
             fetch(url) {

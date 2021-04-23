@@ -128,6 +128,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -147,7 +149,8 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 CACHES = {
     'default': {
         'BACKEND' : 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': 'redis://:p97b4319d2a1b9515a467c740ba02fd0d23923a3cece162a1238b46bcba354350@ec2-18-215-213-65'
+                    '.compute-1.amazonaws.com:32570',
         'OPTIONS' : {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient'
         },
